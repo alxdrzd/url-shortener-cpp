@@ -15,7 +15,9 @@ include_directories(${PQXX_INCLUDE_DIRS})
 
 include_directories(include)
 
-add_executable(url_shortener_cpp src/main.cpp)
+add_executable(url_shortener_cpp src/main.cpp
+        include/Database.h
+        src/Database.cpp)
 
 target_link_libraries(url_shortener_cpp
         ${Boost_LIBRARIES}
