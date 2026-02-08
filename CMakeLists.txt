@@ -17,7 +17,9 @@ include_directories(include)
 
 add_executable(url_shortener_cpp src/main.cpp
         include/Database.h
-        src/Database.cpp)
+        src/Database.cpp
+        src/URLEncoder.cpp
+        include/URLEncoder.h)
 
 target_link_libraries(url_shortener_cpp
         ${Boost_LIBRARIES}

@@ -16,7 +16,7 @@ class Database {
 public:
     explicit Database(const std::string& connection_string);
     ~Database() = default;
-    pqxx::connection& get_connection() const;
+    [[nodiscard]] pqxx::connection& get_connection() const;
 
 private:
     std::unique_ptr<pqxx::connection> m_connection;
