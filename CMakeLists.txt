@@ -19,7 +19,9 @@ add_executable(url_shortener_cpp src/main.cpp
         include/Database.h
         src/Database.cpp
         src/URLEncoder.cpp
-        include/URLEncoder.h)
+        include/URLEncoder.h
+        include/URLRepository.h
+        src/URLRepository.cpp)
 
 target_link_libraries(url_shortener_cpp
         ${Boost_LIBRARIES}
