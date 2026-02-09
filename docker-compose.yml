@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    image: postgres:latest
+    container_name: url_shortener_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: url_shortener_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - postgres_data:/var/lib/postgresql
+
+  app:
+    build: .
+    container_name: url_shortener_cpp
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+          condition: service_healthy
+    environment:
+      DB_CONN_STR: "host=db port=5432 user=postgres password=secret dbname=url_shortener_db"
+
+volumes:
+  postgres_data:
