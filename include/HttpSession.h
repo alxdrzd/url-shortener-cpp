@@ -3,6 +3,7 @@
 #include <memory>
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
+#include <regex>
 #include "UrlRepository.h"
 
 namespace net = boost::asio;

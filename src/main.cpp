@@ -11,8 +11,6 @@ int main() {
         Database db(conn_str);
         UrlRepository repo(db);
 
-        // Указываем путь к папке static
-        // "./static" означает "папка static в той же директории, где запущен исполняемый файл"
         HttpServer server("0.0.0.0", 8080, repo, 4, "./static");
 
         server.run();

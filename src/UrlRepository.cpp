@@ -7,12 +7,25 @@
 
 UrlRepository::UrlRepository(Database &db) : m_db(db) { }
 
-std::string UrlRepository::save_url(const std::string &original_url, int user_id) {
+std::string UrlRepository::save_url(const std::string &original_url) {
     pqxx::work txn(m_db.get_connection());
 
+    pqxx::result res_select = txn.exec_params(
+        "SELECT short_key FROM urls WHERE original_url = $1",
+        original_url
+    );
+
+
+    if (!res_select.empty()) {
+        std::string existing_key = res_select[0][0].as<std::string>();
+        txn.commit();
+        return existing_key;
+    }
+
+
     pqxx::result res = txn.exec_params(
-        "INSERT INTO urls (original_url, user_id, short_key) VALUES ($1, $2, '') RETURNING id",
-        original_url, user_id
+        "INSERT INTO urls (original_url, short_key) VALUES ($1, '') RETURNING id",
+        original_url
     );
 
     uint64_t id = res[0][0].as<long long>();

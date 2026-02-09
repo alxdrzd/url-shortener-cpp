@@ -76,14 +76,19 @@ void HttpSession::handle_request() {
         try {
             json::value request_data = json::parse(m_req.body());
             std::string long_url = request_data.at("original_url").as_string().c_str();
-            int user_id = request_data.at("user_id").as_int64();
-            std::string short_key = m_repo.save_url(long_url, user_id);
-            std::string full_short_url = "https://localhost:8080/" + short_key;
+
+            static const std::regex url_regex(R"(^https://\S+\.\S+$)");
+
+            if (!std::regex_match(long_url, url_regex)) {
+                throw std::runtime_error("Invalid URL format. It must start with http:// or https:// and have a domain.");
+            }
+
+            std::string short_key = m_repo.save_url(long_url);
+            std::string full_short_url = "http://localhost:8080/" + short_key;
 
             json::object response_data;
             response_data["short_url"] = full_short_url;
             response_data["short_key"] = short_key;
-            response_data["user_id"] = user_id;
             response_data["status"] = "success";
 
             res.result(http::status::created);
@@ -94,13 +99,15 @@ void HttpSession::handle_request() {
             res.set(http::field::content_type, "application/json");
 
             json::object error_data;
-            error_data["error"] = e.what();
-            error_data["message"] = "JSON must contain 'original_url' (string) and 'user_id' (int)";
+            error_data["error"] = "Validation Error";
+            error_data["message"] = e.what();
 
-            res.prepare_payload();
+
             res.body() = json::serialize(error_data);
         }
     }
+    res.prepare_payload();
+    do_write(std::move(res));
 }
 
 void HttpSession::do_write(http::response<http::string_body> res) {
