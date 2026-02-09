@@ -1,27 +1,29 @@
-#include "Database.h"
-#include "URLEncoder.h"
 #include <iostream>
-
+#include "Database.h"
+#include "UrlRepository.h"
 
 int main() {
-    std::string conn_str = "host=localhost port=5432 user=postgres password=secret dbname=postgres";
-
     try {
+        std::string conn_str = "host=localhost port=5432 user=postgres password=secret dbname=postgres";
         Database db(conn_str);
+        UrlRepository repo(db);
 
-        std::cout << "Database class works!" << std::endl;
+        // 1. Тестируем сохранение
+        std::string my_long_url = "https://github.com/alxdrzd/super-project-link";
+        std::string key = repo.save_url(my_long_url, 1); // 1 - это ID нашего 'admin'
+
+        std::cout << "Saved! Short key: " << key << std::endl;
+
+        // 2. Тестируем поиск
+        auto found_url = repo.get_original_url(key);
+        if (found_url) {
+            std::cout << "Found original: " << *found_url << std::endl;
+        } else {
+            std::cout << "URL not found!" << std::endl;
+        }
+
     } catch (const std::exception& e) {
-        std::cerr << "Exception in main" << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
     }
-
-    std::uint64_t test_id = 100500;
-    std::string code = URLEncoder::encode(test_id);
-
-    std::cout << "ID: " << test_id << " -> Code: " << code << std::endl;
-
-    // Попробуем очень большое число
-    std::uint64_t big_id = 999999999;
-    std::cout << "ID: " << big_id << " -> Code: " << URLEncoder::encode(big_id) << std::endl;
-
     return 0;
 }

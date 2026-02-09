@@ -2,12 +2,12 @@
 // Created by alxdrzd on 2/8/26.
 //
 
-#include "URLEncoder.h"
+#include "UrlEncoder.h"
 #include <algorithm>
 
 const std::string ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-std::string URLEncoder::encode(std::uint64_t id) {
+std::string UrlEncoder::encode(std::uint64_t id) {
     if (id == 0) {
         return std::string(1, ALPHABET[0]);
     }

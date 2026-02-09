@@ -1,13 +1,13 @@
 //
 // Created by alxdrzd on 2/8/26.
 //
-#include "URLRepository.h"
+#include "UrlRepository.h"
 
-#include "URLEncoder.h"
+#include "UrlEncoder.h"
 
-URLRepository::URLRepository(Database &db) : m_db(db) { }
+UrlRepository::UrlRepository(Database &db) : m_db(db) { }
 
-std::string URLRepository::save_url(const std::string &original_url, int user_id) {
+std::string UrlRepository::save_url(const std::string &original_url, int user_id) {
     pqxx::work txn(m_db.get_connection());
 
     pqxx::result res = txn.exec_params(
@@ -17,7 +17,7 @@ std::string URLRepository::save_url(const std::string &original_url, int user_id
 
     uint64_t id = res[0][0].as<long long>();
 
-    std::string short_key = URLEncoder::encode(id);
+    std::string short_key = UrlEncoder::encode(id);
 
     txn.exec_params(
         "UPDATE urls SET short_key = $1 WHERE id = $2",
@@ -29,7 +29,7 @@ std::string URLRepository::save_url(const std::string &original_url, int user_id
     return short_key;
 }
 
-std::optional<std::string> URLRepository::get_original_url(const std::string &short_key) {
+std::optional<std::string> UrlRepository::get_original_url(const std::string &short_key) {
     pqxx::nontransaction ntxn(m_db.get_connection());
 
     pqxx::result res = ntxn.exec_params(
