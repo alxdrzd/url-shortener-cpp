@@ -11,4 +11,4 @@ public:
     static std::string encode(std::uint64_t id);
 };
 
-#endif //URLENCODER_H
+#endif // URLENCODER_H

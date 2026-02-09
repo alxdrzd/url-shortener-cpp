@@ -24,4 +24,3 @@ std::string UrlEncoder::encode(std::uint64_t id) {
 
     return short_url;
 }
-

@@ -9,11 +9,14 @@
 
 class UrlRepository {
 public:
-    explicit UrlRepository(Database& db);
-    std::string save_url(const std::string& original_url);
-    std::optional<std::string> get_original_url(const std::string& short_key);
+    explicit UrlRepository(Database &db);
+
+    std::string save_url(const std::string &original_url);
+
+    std::optional<std::string> get_original_url(const std::string &short_key);
+
 private:
-    Database& m_db;
+    Database &m_db;
 };
 
-#endif //URLREPOSITORY_H
+#endif // URLREPOSITORY_H

@@ -16,13 +16,15 @@ using tcp = boost::asio::ip::tcp;
 
 class HttpSession : public std::enable_shared_from_this<HttpSession> {
 public:
-    HttpSession(tcp::socket socket, UrlRepository& repo, const std::string& static_root_path);
+    HttpSession(tcp::socket socket, UrlRepository &repo, const std::string &static_root_path);
+
     void start();
+
 private:
     tcp::socket m_socket;
     beast::flat_buffer m_buffer;
     http::request<http::string_body> m_req;
-    UrlRepository& m_repo;
+    UrlRepository &m_repo;
 
     void do_read();
 
@@ -33,4 +35,4 @@ private:
     std::string m_static_root_path;
 };
 
-#endif //HTTPSESSION_H
+#endif // HTTPSESSION_H

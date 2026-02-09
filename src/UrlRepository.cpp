@@ -5,28 +5,25 @@
 
 #include "UrlEncoder.h"
 
-UrlRepository::UrlRepository(Database &db) : m_db(db) { }
+UrlRepository::UrlRepository(Database &db) : m_db(db) {
+}
 
 std::string UrlRepository::save_url(const std::string &original_url) {
     pqxx::work txn(m_db.get_connection());
 
     pqxx::result res_select = txn.exec_params(
         "SELECT short_key FROM urls WHERE original_url = $1",
-        original_url
-    );
-
+        original_url);
 
     if (!res_select.empty()) {
-        std::string existing_key = res_select[0][0].as<std::string>();
+        auto existing_key = res_select[0][0].as<std::string>();
         txn.commit();
         return existing_key;
     }
 
-
     pqxx::result res = txn.exec_params(
         "INSERT INTO urls (original_url, short_key) VALUES ($1, '') RETURNING id",
-        original_url
-    );
+        original_url);
 
     uint64_t id = res[0][0].as<long long>();
 
@@ -34,8 +31,7 @@ std::string UrlRepository::save_url(const std::string &original_url) {
 
     txn.exec_params(
         "UPDATE urls SET short_key = $1 WHERE id = $2",
-        short_key, id
-    );
+        short_key, id);
 
     txn.commit();
 
@@ -47,13 +43,11 @@ std::optional<std::string> UrlRepository::get_original_url(const std::string &sh
 
     pqxx::result res = ntxn.exec_params(
         "SELECT original_url FROM urls WHERE short_key = $1",
-        short_key
-    );
+        short_key);
 
     if (res.empty()) {
         return std::nullopt;
     }
 
     return res[0][0].as<std::string>();
-
 }
