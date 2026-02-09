@@ -1,12 +1,14 @@
 #include "HttpSession.h"
 #include <iostream>
+#include <fstream>
 #include <boost/json.hpp>
 
 namespace json = boost::json;
 
-HttpSession::HttpSession(tcp::socket socket, UrlRepository &repo)
+HttpSession::HttpSession(tcp::socket socket, UrlRepository &repo, const std::string& static_root_path)
     :   m_socket(std::move(socket)),
-        m_repo(repo) {}
+        m_repo(repo),
+        m_static_root_path(static_root_path) {}
 
 void HttpSession::start() {
     do_read();
@@ -52,8 +54,23 @@ void HttpSession::handle_request() {
                 res.body() = "URL was not found in the database";
             }
         } else {
-            res.result(http::status::ok);
-            res.body() = "Welcome to C++ URL shortener!";
+            std::string file_path = m_static_root_path + "/index.html";
+            std::ifstream file(file_path);
+
+            if (file) {
+                std::stringstream buffer;
+
+                buffer << file.rdbuf();
+
+                res.result(http::status::ok);
+                res.set(http::field::content_type, "text/html");
+                res.body() = buffer.str();
+            } else {
+
+                res.result(http::status::not_found);
+                res.body() = "Not Found: index.html is missing on the server.";
+            }
+
         }
     } else if (m_req.method() == http::verb::post) {
         try {
@@ -80,9 +97,22 @@ void HttpSession::handle_request() {
             error_data["error"] = e.what();
             error_data["message"] = "JSON must contain 'original_url' (string) and 'user_id' (int)";
 
+            res.prepare_payload();
             res.body() = json::serialize(error_data);
         }
     }
+}
+
+void HttpSession::do_write(http::response<http::string_body> res) {
+    auto self = shared_from_this();
+
+    auto sp_res = std::make_shared<http::response<http::string_body>>(std::move(res));
+
+    http::async_write(m_socket, *sp_res,
+        [this, self, sp_res](beast::error_code ec, std::size_t) {
+            (void)m_socket.shutdown(tcp::socket::shutdown_send, ec);
+        }
+    );
 }
 
 

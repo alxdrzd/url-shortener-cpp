@@ -2,18 +2,19 @@
 #include "Database.h"
 #include "UrlRepository.h"
 #include "HttpServer.h"
+
+std::string conn_str = "host=localhost port=5432 user=postgres password=secret dbname=postgres";
+
 int main() {
     try {
-        // 1. База
-        std::string conn_str = "host=localhost port=5432 user=postgres password=secret dbname=postgres";
+        // ...
         Database db(conn_str);
         UrlRepository repo(db);
 
-        // 2. Сервер
-        // Запускаем на всех интерфейсах (0.0.0.0), порт 8080, 4 потока
-        HttpServer server("0.0.0.0", 8080, repo, 4);
+        // Указываем путь к папке static
+        // "./static" означает "папка static в той же директории, где запущен исполняемый файл"
+        HttpServer server("0.0.0.0", 8080, repo, 4, "./static");
 
-        // 3. Поехали!
         server.run();
 
     } catch (const std::exception& e) {

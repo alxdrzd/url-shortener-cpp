@@ -22,7 +22,7 @@ using tcp = boost::asio::ip::tcp;
 
 class HttpServer {
 public:
-    HttpServer(const std::string& address, unsigned short port, UrlRepository& repo, int threads);
+    HttpServer(const std::string& address, unsigned short port, UrlRepository& repo, int threads, const std::string& static_root_path);
 
     void run();
 private:
@@ -31,6 +31,7 @@ private:
     UrlRepository& m_repo;
     int m_threads_count;
     void do_accept();
+    std::string m_static_root_path;
 };
 
 #endif //HTTPSERVER_H

@@ -3,13 +3,15 @@
 //
 
 #include "HttpServer.h"
+#include "HttpSession.h"
 #include <iostream>
 
-HttpServer::HttpServer(const std::string &address, unsigned short port, UrlRepository &repo, int threads)
+HttpServer::HttpServer(const std::string &address, unsigned short port, UrlRepository &repo, int threads, const std::string& static_root_path)
     :   m_ioc(threads),
         m_acceptor(m_ioc),
         m_repo(repo),
-        m_threads_count(threads)
+        m_threads_count(threads),
+        m_static_root_path(static_root_path)
 {
     auto const ip_address = net::ip::make_address(address);
 
@@ -50,6 +52,7 @@ void HttpServer::do_accept() {
 
     m_acceptor.async_accept(*socket, [this, socket](beast::error_code ec) {
         if (!ec) {
+            std::make_shared<HttpSession>(std::move(*socket), m_repo, m_static_root_path)->start();
             std::cout << "New connection accepted!" << std::endl;
         } else {
             std::cerr << "Accept error: " << ec.message() << std::endl;
