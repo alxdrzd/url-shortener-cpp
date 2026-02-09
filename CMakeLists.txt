@@ -23,7 +23,9 @@ add_executable(url_shortener_cpp src/main.cpp
         include/UrlRepository.h
         src/UrlRepository.cpp
         include/HttpServer.h
-        src/HttpServer.cpp)
+        src/HttpServer.cpp
+        include/HttpSession.h
+        src/HttpSession.cpp)
 
 target_link_libraries(url_shortener_cpp
         ${Boost_LIBRARIES}
