@@ -13,7 +13,7 @@ A high-performance, asynchronous microservice for shortening URLs, built with **
 *   **Multithreading:** Utilizes a thread pool to handle concurrent connections efficiently.
 *   **Layered Architecture:** Clear separation of concerns:
     *   *Network Layer* (HTTP handling)
-    *   *Service Layer* (Business logic [Base62 encoding)
+    *   *Service Layer* (Business logic  - Base62 encoding)
     *   *Data Layer* (Repository pattern with `libpqxx`)
 *   **Database Integration:** PostgreSQL with automated schema migration.
 *   **Idempotency:** Checks for existing URLs before creating duplicates to save DB space.
