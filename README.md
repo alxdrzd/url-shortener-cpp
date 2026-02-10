@@ -7,7 +7,7 @@ A high-performance, asynchronous microservice for shortening URLs, built with **
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-blue.svg)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)
 
-## 🚀 Key Features
+## Key Features
 
 *   **Asynchronous I/O:** Built on top of `Boost.Asio` and `Boost.Beast` for non-blocking HTTP request handling.
 *   **Multithreading:** Utilizes a thread pool to handle concurrent connections efficiently.
@@ -20,7 +20,7 @@ A high-performance, asynchronous microservice for shortening URLs, built with **
 *   **Frontend:** A simple HTML web interface for testing.
 *   **Containerization:** Fully Dockerized with multi-stage builds (reducing image size).
 
-## 🛠 Tech Stack
+## Tech Stack
 
 *   **Language:** C++17
 *   **Networking:** Boost.Asio, Boost.Beast
@@ -29,7 +29,7 @@ A high-performance, asynchronous microservice for shortening URLs, built with **
 *   **Build System:** CMake
 *   **Deployment:** Docker & Docker Compose
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 .
